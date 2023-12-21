@@ -20,7 +20,7 @@ func Run(url, sessionCookie string) error {
 		Value: sessionCookie,
 	})
 
-	// Perform the request
+	// Make the request and close the response body
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
