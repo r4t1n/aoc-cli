@@ -9,15 +9,7 @@ Command line interface for Advent of Code
 ### Compile from source
 
 ```
-git clone https://github.com/r4t1n/aoc-cli.git
-```
-
-```
-cd aoc-cli
-```
-
-```
-go build -o aoc
+git clone https://github.com/r4t1n/aoc-cli.git && ./aoc-cli/build.sh
 ```
 
 ## Session cookie
