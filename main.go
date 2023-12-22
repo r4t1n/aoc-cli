@@ -14,7 +14,7 @@ import (
 
 const (
 	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
-	defaultDay   = 25
+	defaultDay   = 1
 )
 
 func main() {
@@ -32,17 +32,18 @@ func main() {
 	}
 	sessionCookie := strings.TrimSpace(string(sessionCookieByte))
 
-	currentTime := time.Run()
-	if currentTime.Err != nil {
-		log.Fatalf("error: %v", currentTime.Err)
+	// Run the time module
+	currentTimeAOC := time.Run()
+	if currentTimeAOC.Err != nil {
+		log.Fatalf("error: %v", currentTimeAOC.Err)
 	}
 
 	// Check if it is December and apply the day if true, else fall back to the default day
 	var inputURL string
-	if currentTime.Month == "December" {
-		inputURL = fmt.Sprintf(baseInputURL, currentTime.Year, currentTime.Day)
+	if currentTimeAOC.Month == "December" {
+		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, currentTimeAOC.Day)
 	} else {
-		inputURL = fmt.Sprintf(baseInputURL, currentTime.Year, defaultDay)
+		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, defaultDay)
 	}
 
 	// Run the HTTP module

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// ReturnWithError returns the time and any potential error
+// ReturnWithError returns any values and any potential errors
 type ReturnWithError struct {
 	Year  int
 	Month string
@@ -20,11 +20,11 @@ func Run() ReturnWithError {
 		return ReturnWithError{Err: fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)}
 	}
 
-	// Get the current year, month and date
-	currentTimeEST := time.Now().In(est)
-	year := currentTimeEST.Year()
-	month := currentTimeEST.Month().String()
-	day := currentTimeEST.Day()
+	// Get the current year, month and day
+	currentTimeAOC := time.Now().In(est)
+	year := currentTimeAOC.Year()
+	month := currentTimeAOC.Month().String()
+	day := currentTimeAOC.Day()
 
 	return ReturnWithError{Year: year, Month: month, Day: day, Err: nil}
 }
