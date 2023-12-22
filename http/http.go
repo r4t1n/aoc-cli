@@ -12,7 +12,7 @@ type ReturnWithError struct {
 	Err  error
 }
 
-func Run(url, sessionCookie string) ReturnWithError {
+func Get(url, sessionCookie string) ReturnWithError {
 	// Create the HTTP client and create an HTTP GET request with the provided URL
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)

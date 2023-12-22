@@ -13,7 +13,7 @@ type ReturnWithError struct {
 	Err   error
 }
 
-func Run() ReturnWithError {
+func Get() ReturnWithError {
 	// Set the timezone to EST/UTC-5 as Advent of Code uses it
 	est, err := time.LoadLocation("America/New_York")
 	if err != nil {

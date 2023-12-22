@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"os/user"
 	"path/filepath"
-	"strings"
 
+	"github.com/r4t1n/aoc-cli/file"
 	"github.com/r4t1n/aoc-cli/http"
 	"github.com/r4t1n/aoc-cli/time"
 )
@@ -25,15 +24,14 @@ func main() {
 	}
 	sessionCookieFilePath := filepath.Join(currentUser.HomeDir, ".adventofcode.session")
 
-	// Read the file, trim any whitespace and convert it to string
-	sessionCookieByte, err := os.ReadFile(sessionCookieFilePath)
-	if err != nil {
-		log.Fatalf("error reading the session cookie file at %s: %v", sessionCookieFilePath, err)
+	// Get the session cookie
+	sessionCookie := file.ReadSessionCookie(sessionCookieFilePath)
+	if sessionCookie.Err != nil {
+		log.Fatalf("error: %v", sessionCookie.Err)
 	}
-	sessionCookie := strings.TrimSpace(string(sessionCookieByte))
 
-	// Run the time module
-	currentTimeAOC := time.Run()
+	// Get the year, month and day
+	currentTimeAOC := time.Get()
 	if currentTimeAOC.Err != nil {
 		log.Fatalf("error: %v", currentTimeAOC.Err)
 	}
@@ -46,11 +44,15 @@ func main() {
 		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, defaultDay)
 	}
 
-	// Run the HTTP module
-	httpResponse := http.Run(inputURL, sessionCookie)
+	// Make the HTTP GET request and get the response body
+	httpResponse := http.Get(inputURL, sessionCookie.SessionCookie)
 	if httpResponse.Err != nil {
 		log.Fatalf("error: %v", httpResponse.Err)
 	}
 
-	fmt.Println(httpResponse.Body)
+	err = file.WriteInput(httpResponse.Body)
+	if err != nil {
+		fmt.Println("error writing input to file:", err)
+		return
+	}
 }
