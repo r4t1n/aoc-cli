@@ -53,8 +53,10 @@ func main() {
 	}
 
 	// Run the HTTP module
-	err = http.Run(inputURL, sessionCookie)
-	if err != nil {
-		log.Fatal(err)
+	httpResponse := http.Run(inputURL, sessionCookie)
+	if httpResponse.Err != nil {
+		log.Fatalf("Error: %v", httpResponse.Err)
 	}
+
+	fmt.Println(httpResponse.Body)
 }
