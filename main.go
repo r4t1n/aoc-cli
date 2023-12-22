@@ -7,9 +7,9 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/r4t1n/aoc-cli/http"
+	"github.com/r4t1n/aoc-cli/time"
 )
 
 const (
@@ -21,41 +21,34 @@ func main() {
 	// Get the Advent of Code session cookie from the users home directory
 	currentUser, err := user.Current()
 	if err != nil {
-		log.Fatalf("Error getting the current user: %v", err)
+		log.Fatalf("error getting the current user: %v", err)
 	}
 	sessionCookieFilePath := filepath.Join(currentUser.HomeDir, ".adventofcode.session")
 
 	// Read the file, trim any whitespace and convert it to string
 	sessionCookieByte, err := os.ReadFile(sessionCookieFilePath)
 	if err != nil {
-		log.Fatalf("Error reading the session cookie file at %s: %v", sessionCookieFilePath, err)
+		log.Fatalf("error reading the session cookie file at %s: %v", sessionCookieFilePath, err)
 	}
 	sessionCookie := strings.TrimSpace(string(sessionCookieByte))
 
-	// Set the timezone to EST/UTC-5 as Advent of Code uses it
-	est, err := time.LoadLocation("America/New_York")
-	if err != nil {
-		log.Fatalf("Error loading the EST/UTC-5 timezone: %v", err)
+	currentTime := time.Run()
+	if currentTime.Err != nil {
+		log.Fatalf("error: %v", currentTime.Err)
 	}
-
-	// Get the current year, month and date
-	currentTimeEST := time.Now().In(est)
-	year := currentTimeEST.Year()
-	month := currentTimeEST.Month()
-	day := currentTimeEST.Day()
 
 	// Check if it is December and apply the day if true, else fall back to the default day
 	var inputURL string
-	if month == time.December {
-		inputURL = fmt.Sprintf(baseInputURL, year, day)
+	if currentTime.Month == "December" {
+		inputURL = fmt.Sprintf(baseInputURL, currentTime.Year, currentTime.Day)
 	} else {
-		inputURL = fmt.Sprintf(baseInputURL, year, defaultDay)
+		inputURL = fmt.Sprintf(baseInputURL, currentTime.Year, defaultDay)
 	}
 
 	// Run the HTTP module
 	httpResponse := http.Run(inputURL, sessionCookie)
 	if httpResponse.Err != nil {
-		log.Fatalf("Error: %v", httpResponse.Err)
+		log.Fatalf("error: %v", httpResponse.Err)
 	}
 
 	fmt.Println(httpResponse.Body)
