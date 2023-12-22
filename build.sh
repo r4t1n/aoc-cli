@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Change to the aoc-cli directory, suppressing errors
+# Change to the aoc-cli directory, suppressing errors if inside the aoc-cli directory
 cd aoc-cli 2>/dev/null || true
 
 # Build it
