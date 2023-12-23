@@ -6,21 +6,21 @@ import (
 	"strings"
 )
 
-// ReturnWithError returns any values and any potential errors
-type ReturnWithError struct {
+// ReadSessionCookieWithError returns the session cookie and any potential errors
+type ReadSessionCookieWithError struct {
 	SessionCookie string
 	Err           error
 }
 
-func ReadSessionCookie(sessionCookieFilePath string) ReturnWithError {
+func ReadSessionCookie(sessionCookieFilePath string) ReadSessionCookieWithError {
 	// Read the file, trim any whitespace and convert it to string
 	sessionCookieByte, err := os.ReadFile(sessionCookieFilePath)
 	if err != nil {
-		return ReturnWithError{Err: fmt.Errorf("error reading the session cookie file at %s: %v", sessionCookieFilePath, err)}
+		return ReadSessionCookieWithError{Err: fmt.Errorf("error reading the session cookie file at %s: %v", sessionCookieFilePath, err)}
 	}
 	sessionCookie := strings.TrimSpace(string(sessionCookieByte))
 
-	return ReturnWithError{SessionCookie: sessionCookie, Err: nil}
+	return ReadSessionCookieWithError{SessionCookie: sessionCookie, Err: nil}
 }
 
 func WriteInput(input string) error {

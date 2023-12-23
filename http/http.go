@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// ReturnWithError returns any values and any potential errors
+// GetWithError returns the HTTP body and any potential errors
 type ReturnWithError struct {
 	Body string
 	Err  error
