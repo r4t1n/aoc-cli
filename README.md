@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/r4t1n/aoc-cli)](https://goreportcard.com/report/github.com/r4t1n/aoc-cli)
 
-Command line interface for Advent of Code
+Command line interface for [Advent of Code](https://adventofcode.com/about)
 
 ## Installing
 

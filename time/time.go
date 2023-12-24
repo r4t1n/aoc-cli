@@ -5,19 +5,22 @@ import (
 	"time"
 )
 
-// GetWithError returns the year, month, day and any potential errors
-type GetWithError struct {
-	Year  int
-	Month string
-	Day   int
-	Err   error
+const (
+	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
+	defaultDay   = 1
+)
+
+// ReturnInputURLWithError returns the input URL from the date
+type ReturnInputURLWithError struct {
+	InputURL string
+	Err      error
 }
 
-func Get() GetWithError {
+func ReturnInputURL() ReturnInputURLWithError {
 	// Set the timezone to EST/UTC-5 as Advent of Code uses it
 	est, err := time.LoadLocation("America/New_York")
 	if err != nil {
-		return GetWithError{Err: fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)}
+		return ReturnInputURLWithError{Err: fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)}
 	}
 
 	// Get the current year, month and day
@@ -26,5 +29,13 @@ func Get() GetWithError {
 	month := currentTimeAOC.Month().String()
 	day := currentTimeAOC.Day()
 
-	return GetWithError{Year: year, Month: month, Day: day, Err: nil}
+	// Check if it is December and apply the day if true, else fall back to the default day
+	var inputURL string
+	if month == "December" {
+		inputURL = fmt.Sprintf(baseInputURL, year, day)
+	} else {
+		inputURL = fmt.Sprintf(baseInputURL, year, defaultDay)
+	}
+
+	return ReturnInputURLWithError{InputURL: inputURL, Err: nil}
 }

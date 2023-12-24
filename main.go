@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/r4t1n/aoc-cli/file"
@@ -10,47 +9,47 @@ import (
 	"github.com/r4t1n/aoc-cli/time"
 )
 
-const (
-	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
-	defaultDay   = 1
-)
-
 func main() {
 	// Get the session cookie file path
 	sessionCookieFilePath := path.GetSessionCookieFilePath()
 	if sessionCookieFilePath.Err != nil {
-		log.Fatalf("error: %v", sessionCookieFilePath.Err)
+		log.Fatal(sessionCookieFilePath.Err)
 	}
 
 	// Get the session cookie
 	sessionCookie := file.ReadSessionCookie(sessionCookieFilePath.SessionCookieFilePath)
 	if sessionCookie.Err != nil {
-		log.Fatalf("error: %v", sessionCookie.Err)
+		log.Fatal(sessionCookie.Err)
 	}
 
-	// Get the year, month and day
-	currentTimeAOC := time.Get()
-	if currentTimeAOC.Err != nil {
-		log.Fatalf("error: %v", currentTimeAOC.Err)
+	// Try to get the input URL from the working directory
+	pathInputURL := path.ReturnInputURL()
+	if pathInputURL.Err != nil {
+		log.Fatal(pathInputURL.Err)
 	}
 
-	// Check if it is December and apply the day if true, else fall back to the default day
+	// Check if getting the date from the working directory was successful
 	var inputURL string
-	if currentTimeAOC.Month == "December" {
-		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, currentTimeAOC.Day)
+	if len(pathInputURL.InputURL) != 0 {
+		inputURL = pathInputURL.InputURL
 	} else {
-		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, defaultDay)
+		// Return the input URL from the date
+		timeInputURL := time.ReturnInputURL()
+		if timeInputURL.Err != nil {
+			log.Fatal(timeInputURL.Err)
+		}
+		inputURL = timeInputURL.InputURL
 	}
 
 	// Make the HTTP GET request and get the response body
 	httpResponse := http.Get(inputURL, sessionCookie.SessionCookie)
 	if httpResponse.Err != nil {
-		log.Fatalf("error: %v", httpResponse.Err)
+		log.Fatal(httpResponse.Err)
 	}
 
 	// Write the response body to file
 	err := file.WriteInput(httpResponse.Body)
 	if err != nil {
-		log.Fatalf("error writing input to file: %v", err)
+		log.Fatal(err)
 	}
 }
