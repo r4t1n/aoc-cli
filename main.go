@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"path/filepath"
 
 	"github.com/r4t1n/aoc-cli/file"
 	"github.com/r4t1n/aoc-cli/http"
@@ -9,40 +11,56 @@ import (
 	"github.com/r4t1n/aoc-cli/time"
 )
 
+const (
+	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
+	defaultDay   = 1
+)
+
 func main() {
-	// Get the session cookie file path
-	sessionCookieFilePath := path.GetSessionCookieFilePath()
-	if sessionCookieFilePath.Err != nil {
-		log.Fatal(sessionCookieFilePath.Err)
+	// Get the users home directory to get the session cookie file path
+	userHomeDirectory := path.ReturnUserHomeDirectory()
+	if userHomeDirectory.Err != nil {
+		log.Fatal(userHomeDirectory.Err)
 	}
+	sessionCookieFilePath := filepath.Join(userHomeDirectory.UserHomeDirectory, ".adventofcode.session")
 
 	// Get the session cookie
-	sessionCookie := file.ReadSessionCookie(sessionCookieFilePath.SessionCookieFilePath)
+	sessionCookie := file.ReturnSessionCookie(sessionCookieFilePath)
 	if sessionCookie.Err != nil {
 		log.Fatal(sessionCookie.Err)
 	}
 
-	// Try to get the input URL from the working directory
-	pathInputURL := path.ReturnInputURL()
-	if pathInputURL.Err != nil {
-		log.Fatal(pathInputURL.Err)
+	// Try to get the date from the working directory
+	pathDate := path.ReturnDate()
+	if pathDate.Err != nil {
+		log.Fatal(pathDate.Err)
 	}
 
 	// Check if getting the date from the working directory was successful
-	var inputURL string
-	if len(pathInputURL.InputURL) != 0 {
-		inputURL = pathInputURL.InputURL
+	var year int
+	var day int
+	if pathDate.Year != 0 {
+		year = pathDate.Year
+		day = pathDate.Day
 	} else {
-		// Return the input URL from the date
-		timeInputURL := time.ReturnInputURL()
-		if timeInputURL.Err != nil {
-			log.Fatal(timeInputURL.Err)
+		// Return the date from the current date
+		timeDate := time.ReturnDate()
+		if timeDate.Err != nil {
+			log.Fatal(timeDate.Err)
 		}
-		inputURL = timeInputURL.InputURL
+
+		year = timeDate.Year
+		day = timeDate.Day
+
+		// Check if it is not December or if the day is over 25 (last Advent of Code puzzle)
+		if timeDate.Month != "December" || timeDate.Day > 25 {
+			day = defaultDay
+		}
 	}
+	inputURL := fmt.Sprintf(baseInputURL, year, day)
 
 	// Make the HTTP GET request and get the response body
-	httpResponse := http.Get(inputURL, sessionCookie.SessionCookie)
+	httpResponse := http.ReturnBody(inputURL, sessionCookie.SessionCookie)
 	if httpResponse.Err != nil {
 		log.Fatal(httpResponse.Err)
 	}
