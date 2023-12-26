@@ -7,9 +7,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-)
 
-const baseInputURL = "https://adventofcode.com/%d/day/%d/input"
+	"github.com/fatih/color"
+	"github.com/r4t1n/aoc-cli/time"
+)
 
 // ReturnDateWithError returns the year and day if found in the working directory and any potential errors
 type ReturnDateWithError struct {
@@ -45,7 +46,19 @@ func ReturnDate() ReturnDateWithError {
 			return ReturnDateWithError{Err: fmt.Errorf("error converting string to int: %v", err)}
 		}
 
-		return ReturnDateWithError{Year: year, Day: day, Err: err}
+		// Return the date from the current date
+		timeDate := time.ReturnDate()
+		if timeDate.Err != nil {
+			return ReturnDateWithError{Err: timeDate.Err}
+		}
+
+		// Check if date from path is invalid
+		if year < 2015 || year > timeDate.Year || day < 1 || day > 25 {
+			color.Yellow("Date from path is invalid, falling back to current date")
+		} else {
+			return ReturnDateWithError{Year: year, Day: day, Err: err}
+		}
+
 	}
 
 	return ReturnDateWithError{Err: err}

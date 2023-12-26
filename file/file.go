@@ -25,6 +25,7 @@ func ReturnSessionCookie(sessionCookieFilePath string) ReturnSessionCookieWithEr
 
 func WriteInput(input string) error {
 	filePath := "input.txt"
+	input = strings.TrimSpace(input)
 
 	// Write the input to the file
 	err := os.WriteFile(filePath, []byte(input), 0666)

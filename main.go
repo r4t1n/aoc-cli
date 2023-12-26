@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"strconv"
 
+	"github.com/fatih/color"
 	"github.com/r4t1n/aoc-cli/file"
 	"github.com/r4t1n/aoc-cli/http"
 	"github.com/r4t1n/aoc-cli/path"
@@ -14,6 +16,10 @@ import (
 const (
 	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
 	defaultDay   = 1
+)
+
+var (
+	blue = color.New(color.FgBlue).SprintFunc()
 )
 
 func main() {
@@ -36,7 +42,7 @@ func main() {
 		log.Fatal(pathDate.Err)
 	}
 
-	// Check if getting the date from the working directory was successful
+	// Set the year and day for the input URL, either from the path or the current date
 	var year int
 	var day int
 	if pathDate.Year != 0 {
@@ -58,6 +64,7 @@ func main() {
 		}
 	}
 	inputURL := fmt.Sprintf(baseInputURL, year, day)
+	fmt.Printf("Downloading input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 
 	// Make the HTTP GET request and get the response body
 	httpResponse := http.ReturnBody(inputURL, sessionCookie.SessionCookie)
