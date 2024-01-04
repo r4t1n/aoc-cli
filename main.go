@@ -45,7 +45,7 @@ func main() {
 	// Set the year and day for the input URL, either from the path or the current date
 	var year int
 	var day int
-	if pathDate.Year != 0 {
+	if pathDate.Year != 0 && pathDate.Day != 0 {
 		year = pathDate.Year
 		day = pathDate.Day
 	} else {
