@@ -33,7 +33,7 @@ func ReturnDate() ReturnDateWithError {
 	}
 
 	// Extract the year and day from the working directory
-	directoryPattern := regexp.MustCompile("[0-9]+/[0-9]+$") // [0-9]+: year, /: child directory, [0-9]+: day, $: end of string
+	directoryPattern := regexp.MustCompile("[0-9]+/[0-9]+") // [0-9]+: year, /: child directory, [0-9]+: day
 	directories := directoryPattern.FindString(workingDirectory)
 	if len(directories) > 0 {
 		yearAndDay := strings.Split(directories, "/")
