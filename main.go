@@ -59,7 +59,10 @@ func main() {
 		day = timeDate.Day
 
 		// Check if it is not December or if the day is over 25 (last Advent of Code puzzle)
-		if timeDate.Month != "December" || timeDate.Day > 25 {
+		if timeDate.Month != "December" {
+			year = timeDate.Year - 1
+			day = defaultDay
+		} else if timeDate.Day > 25 {
 			day = defaultDay
 		}
 	}
