@@ -20,11 +20,12 @@ func ReturnBody(url, sessionCookie string) ReturnBodyWithError {
 		return ReturnBodyWithError{Err: fmt.Errorf("error creating HTTP GET request for %s: %v", url, err)}
 	}
 
-	// Add the session cookie to the request
+	// Add the session cookie and User Agent to the request
 	req.AddCookie(&http.Cookie{
 		Name:  "session",
 		Value: sessionCookie,
 	})
+	req.Header.Set("User-Agent", "https://github.com/r4t1n/aoc-cli by ratin")
 
 	// Make the request and close the response body
 	resp, err := client.Do(req)
