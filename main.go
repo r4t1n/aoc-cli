@@ -1,56 +1,96 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
-	"os/user"
-	"path/filepath"
-	"strings"
+	"strconv"
 
+	"github.com/fatih/color"
+	"github.com/r4t1n/aoc-cli/date"
+	"github.com/r4t1n/aoc-cli/file"
 	"github.com/r4t1n/aoc-cli/http"
-	"github.com/r4t1n/aoc-cli/time"
+	"github.com/r4t1n/aoc-cli/path"
 )
 
 const (
 	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
-	defaultDay   = 1
 )
 
+var (
+	blue      = color.New(color.FgBlue).SprintFunc()
+	red       = color.New(color.FgRed).SprintFunc()
+	day, year int
+)
+
+func init() {
+	flag.IntVar(&day, "day", 0, "The day used for the date")
+	flag.IntVar(&year, "year", 0, "The year used for the date")
+}
+
 func main() {
-	// Get the Advent of Code session cookie from the users home directory
-	currentUser, err := user.Current()
+	flag.Parse()
+
+	var err error
+	if day == 0 || year == 0 {
+		// Get the date either from the path or the time
+		day, year, err = date.ReturnDate()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// Get the users home directory
+	userHomeDirectory, err := path.ReturnUserHomeDirectory()
 	if err != nil {
-		log.Fatalf("error getting the current user: %v", err)
+		log.Fatal(err)
 	}
-	sessionCookieFilePath := filepath.Join(currentUser.HomeDir, ".adventofcode.session")
 
-	// Read the file, trim any whitespace and convert it to string
-	sessionCookieByte, err := os.ReadFile(sessionCookieFilePath)
+	// Check if the cached input exists
+	cachedInputExists, err := path.CheckForCachedInput(year, day, userHomeDirectory)
 	if err != nil {
-		log.Fatalf("error reading the session cookie file at %s: %v", sessionCookieFilePath, err)
-	}
-	sessionCookie := strings.TrimSpace(string(sessionCookieByte))
-
-	// Run the time module
-	currentTimeAOC := time.Run()
-	if currentTimeAOC.Err != nil {
-		log.Fatalf("error: %v", currentTimeAOC.Err)
+		log.Fatal(err)
 	}
 
-	// Check if it is December and apply the day if true, else fall back to the default day
-	var inputURL string
-	if currentTimeAOC.Month == "December" {
-		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, currentTimeAOC.Day)
+	if cachedInputExists {
+		fmt.Printf("Copying input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
+		err = file.CopyInput(day, year, userHomeDirectory)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
-		inputURL = fmt.Sprintf(baseInputURL, currentTimeAOC.Year, defaultDay)
-	}
+		sessionCookieExists, err := path.CheckForSessionCookie(userHomeDirectory)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	// Run the HTTP module
-	httpResponse := http.Run(inputURL, sessionCookie)
-	if httpResponse.Err != nil {
-		log.Fatalf("error: %v", httpResponse.Err)
-	}
+		if !sessionCookieExists {
+			fmt.Printf(red("Session cookie file does not exist in %s/.adventofcode.session, please follow the in the README.md to make it\n"), userHomeDirectory)
+			os.Exit(1)
+		}
 
-	fmt.Println(httpResponse.Body)
+		// Get the session cookie
+		sessionCookie, err := file.ReturnSessionCookie(userHomeDirectory)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Downloading input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
+
+		// Make the HTTP GET request and get the response body
+		inputURL := fmt.Sprintf(baseInputURL, year, day)
+		body, err := http.ReturnBody(inputURL, sessionCookie)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Writing input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
+
+		// Write the response body to file in the working directory
+		err = file.WriteInput(day, year, userHomeDirectory, body)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 }
