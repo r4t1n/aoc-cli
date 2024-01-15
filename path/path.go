@@ -4,73 +4,35 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"regexp"
+	"path/filepath"
 	"strconv"
-	"strings"
-
-	"github.com/fatih/color"
-	"github.com/r4t1n/aoc-cli/time"
 )
 
-// ReturnDateWithError returns the year and day if found in the working directory and any potential errors
-type ReturnDateWithError struct {
-	Year int
-	Day  int
-	Err  error
-}
+func CheckForCachedInput(year, day int, userHomeDirectory string) (cachedInputExists bool, err error) {
+	dateFolderPath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day))
+	inputFilePath := filepath.Join(dateFolderPath, "input.txt")
 
-// ReturnUserHomeDirectoryWithError returns the users home directory and any potential errors
-type ReturnUserHomeDirectoryWithError struct {
-	UserHomeDirectory string
-	Err               error
-}
-
-func ReturnDate() ReturnDateWithError {
-	// Get the working directory
-	workingDirectory, err := os.Getwd()
-	if err != nil {
-		return ReturnDateWithError{Err: fmt.Errorf("error getting the working directory: %v", err)}
+	// Check if the date folder exists, if not create it
+	if _, err = os.Stat(dateFolderPath); os.IsNotExist(err) {
+		err = os.MkdirAll(dateFolderPath, os.ModePerm)
+		return false, err
 	}
 
-	// Extract the year and day from the working directory
-	directoryPattern := regexp.MustCompile("[0-9]+/[0-9]+") // [0-9]+: year, /: child directory, [0-9]+: day
-	directories := directoryPattern.FindString(workingDirectory)
-	if len(directories) > 0 {
-		yearAndDay := strings.Split(directories, "/")
-		year, err := strconv.Atoi(yearAndDay[0])
-		if err != nil {
-			return ReturnDateWithError{Err: fmt.Errorf("error converting string to int: %v", err)}
-		}
-		day, err := strconv.Atoi(yearAndDay[1])
-		if err != nil {
-			return ReturnDateWithError{Err: fmt.Errorf("error converting string to int: %v", err)}
-		}
-
-		// Return the date from the current date
-		timeDate := time.ReturnDate()
-		if timeDate.Err != nil {
-			return ReturnDateWithError{Err: timeDate.Err}
-		}
-
-		// Check if date from path is invalid
-		if year < 2015 || year > timeDate.Year || day < 1 || day > 25 {
-			color.Yellow("Date from path is invalid, falling back to current date")
-		} else {
-			return ReturnDateWithError{Year: year, Day: day, Err: err}
-		}
-
+	// Check if the input file exists
+	if _, err = os.Stat(inputFilePath); !os.IsNotExist(err) { // os.IsExist did not seem to work for some reason, so just use os.IsNotExist and flip the bool
+		return true, err
 	}
 
-	return ReturnDateWithError{Err: err}
+	return false, nil
 }
 
-func ReturnUserHomeDirectory() ReturnUserHomeDirectoryWithError {
+func ReturnUserHomeDirectory() (userHomeDirectory string, err error) {
 	// Get the Advent of Code session cookie from the users home directory
 	currentUser, err := user.Current()
 	if err != nil {
-		return ReturnUserHomeDirectoryWithError{Err: fmt.Errorf("error getting the current user: %v", err)}
+		return "", fmt.Errorf("error getting the current user: %v", err)
 	}
-	userHomeDirectory := currentUser.HomeDir
+	userHomeDirectory = currentUser.HomeDir
 
-	return ReturnUserHomeDirectoryWithError{UserHomeDirectory: userHomeDirectory, Err: err}
+	return userHomeDirectory, err
 }

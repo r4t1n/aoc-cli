@@ -11,16 +11,12 @@ Command line interface for [Advent of Code](https://adventofcode.com/about)
 **[Make sure go is installed for building aoc-cli](https://go.dev/doc/install)**
 
 ```
-git clone https://github.com/r4t1n/aoc-cli.git && ./aoc-cli/build.sh
+git clone https://github.com/r4t1n/aoc-cli.git && cd aoc-cli
 ```
 
-or
-
 ```
-git clone https://github.com/r4t1n/aoc-cli.git && cd aoc-cli && go build
+make && sudo make install
 ```
-
-**then** move the binary to the desired location (make sure that location is in the PATH).
 
 ## Session cookie
 
