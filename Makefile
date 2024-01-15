@@ -1,7 +1,7 @@
 DESTINATION = /usr/local/bin
 TARGET = aoc
 
-all: build
+all: build install
 
 build:
 	go build -o $(TARGET)

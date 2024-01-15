@@ -11,7 +11,7 @@ Command line interface for [Advent of Code](https://adventofcode.com/about)
 **[Make sure go is installed for building aoc-cli](https://go.dev/doc/install)**
 
 ```
-git clone https://github.com/r4t1n/aoc-cli.git && cd aoc-cli && make && make install
+git clone https://github.com/r4t1n/aoc-cli.git && cd aoc-cli && make
 ```
 
 ## Session cookie
@@ -28,10 +28,10 @@ For example:
 
 ## Command line flags
 
-#### `-day (int)`
+#### `-day int`
 
 Sets the day used for the date, replace int with the day
 
-#### `-year (int)`
+#### `-year int`
 
 Sets the year used for the date, replace int with the year
