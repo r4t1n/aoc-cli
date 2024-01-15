@@ -28,10 +28,10 @@ For example:
 
 ## Command line flags
 
-### `-day (int)`
+#### `-day (int)`
 
 Sets the day used for the date, replace int with the day
 
-### `-year (int)`
+#### `-year (int)`
 
 Sets the year used for the date, replace int with the year
