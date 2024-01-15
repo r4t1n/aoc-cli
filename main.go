@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	// Try to get the date from the working directory
+	// Get the date either from the path or the time
 	year, day, err := date.ReturnDate()
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +33,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Try to copy input from cache
+	// Check if the cached input exists
 	cachedInputExists, err := path.CheckForCachedInput(year, day, userHomeDirectory)
 	if err != nil {
 		log.Fatal(err)
@@ -52,14 +52,16 @@ func main() {
 			log.Fatal(err)
 		}
 
-		inputURL := fmt.Sprintf(baseInputURL, year, day)
 		fmt.Printf("Downloading input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 
 		// Make the HTTP GET request and get the response body
+		inputURL := fmt.Sprintf(baseInputURL, year, day)
 		body, err := http.ReturnBody(inputURL, sessionCookie)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		fmt.Printf("Writing input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 
 		// Write the response body to file in the working directory
 		err = file.WriteInput(year, day, userHomeDirectory, body)

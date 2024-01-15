@@ -27,7 +27,7 @@ func ReturnDate() (year, day int, err error) {
 	}
 
 	// Check if date from path is invalid
-	if pathYear < 2015 || pathYear > timeYear || pathDay < 1 || pathDay > 25 {
+	if pathYear < 2015 || pathYear > timeYear || (pathYear == timeYear && timeMonth != 12) || pathDay < 1 || pathDay > 25 {
 		// Check if date from time is invalid
 		if timeMonth != 12 {
 			timeYear = timeYear - 1
