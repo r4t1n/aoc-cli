@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"strconv"
@@ -17,14 +18,25 @@ const (
 )
 
 var (
-	blue = color.New(color.FgBlue).SprintFunc()
+	blue      = color.New(color.FgBlue).SprintFunc()
+	day, year int
 )
 
+func init() {
+	flag.IntVar(&day, "day", 0, "The day used for the date")
+	flag.IntVar(&year, "year", 0, "The year used for the date")
+}
+
 func main() {
-	// Get the date either from the path or the time
-	year, day, err := date.ReturnDate()
-	if err != nil {
-		log.Fatal(err)
+	flag.Parse()
+
+	var err error
+	if day == 0 || year == 0 {
+		// Get the date either from the path or the time
+		day, year, err = date.ReturnDate()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Get the users home directory
@@ -41,7 +53,7 @@ func main() {
 
 	if cachedInputExists {
 		fmt.Printf("Copying input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
-		err = file.CopyInput(year, day, userHomeDirectory)
+		err = file.CopyInput(day, year, userHomeDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -64,7 +76,7 @@ func main() {
 		fmt.Printf("Writing input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 
 		// Write the response body to file in the working directory
-		err = file.WriteInput(year, day, userHomeDirectory, body)
+		err = file.WriteInput(day, year, userHomeDirectory, body)
 		if err != nil {
 			log.Fatal(err)
 		}

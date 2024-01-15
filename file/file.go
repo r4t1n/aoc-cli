@@ -21,7 +21,7 @@ func ReturnSessionCookie(userHomeDirectory string) (sessionCookie string, err er
 	return sessionCookie, nil
 }
 
-func CopyInput(year, day int, userHomeDirectory string) error {
+func CopyInput(day, year int, userHomeDirectory string) error {
 	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input.txt")
 
 	cacheFilePathFile, err := os.Open(cacheFilePath)
@@ -49,7 +49,7 @@ func CopyInput(year, day int, userHomeDirectory string) error {
 	return nil
 }
 
-func WriteInput(year, day int, userHomeDirectory, input string) error {
+func WriteInput(day, year int, userHomeDirectory, input string) error {
 	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input.txt")
 
 	// Write the input to the file
@@ -58,7 +58,7 @@ func WriteInput(year, day int, userHomeDirectory, input string) error {
 		return fmt.Errorf("error writing to file at %s: %v", cacheFilePath, err)
 	}
 
-	err = CopyInput(year, day, userHomeDirectory)
+	err = CopyInput(day, year, userHomeDirectory)
 	if err != nil {
 		return err
 	}

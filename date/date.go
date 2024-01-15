@@ -13,37 +13,37 @@ const (
 	defaultDay = 1
 )
 
-func ReturnDate() (year, day int, err error) {
+func ReturnDate() (day, year int, err error) {
 	// Return the date from the path
-	pathYear, pathDay, err := ReturnDateFromPath()
+	pathDay, pathYear, err := ReturnDateFromPath()
 	if err != nil {
 		return 0, 0, err
 	}
 
 	// Return the date from the current date
-	timeYear, timeMonth, timeDay, err := ReturnCurrentDateEST()
+	timeDay, timeMonth, timeYear, err := ReturnCurrentDateEST()
 	if err != nil {
 		return 0, 0, err
 	}
 
 	// Check if date from path is invalid
-	if pathYear < 2015 || pathYear > timeYear || (pathYear == timeYear && timeMonth != 12) || pathDay < 1 || pathDay > 25 {
+	if pathDay < 1 || pathDay > 25 || pathYear < 2015 || pathYear > timeYear || (pathYear == timeYear && timeMonth != 12) {
 		// Check if date from time is invalid
 		if timeMonth != 12 {
-			timeYear = timeYear - 1
 			timeDay = defaultDay
+			timeYear = timeYear - 1
 		}
 		if timeDay > 25 {
 			day = defaultDay
 		}
 
-		return timeYear, timeDay, nil
+		return timeDay, timeYear, nil
 	} else {
-		return pathYear, pathDay, nil
+		return pathDay, pathYear, nil
 	}
 }
 
-func ReturnDateFromPath() (year, day int, err error) {
+func ReturnDateFromPath() (day, year int, err error) {
 	// Get the working directory
 	workingDirectory, err := os.Getwd()
 	if err != nil {
@@ -53,7 +53,7 @@ func ReturnDateFromPath() (year, day int, err error) {
 	// Extract the year and day from the working directory
 	directoryPattern := regexp.MustCompile("[0-9]+/[0-9]+") // [0-9]+: year, /: child directory, [0-9]+: day
 	directories := directoryPattern.FindString(workingDirectory)
-	var pathYear, pathDay int
+	var pathDay, pathYear int
 	if len(directories) > 0 {
 		pathYearAndDay := strings.Split(directories, "/")
 
@@ -67,7 +67,7 @@ func ReturnDateFromPath() (year, day int, err error) {
 		}
 	}
 
-	return pathYear, pathDay, err
+	return pathDay, pathYear, err
 }
 
 func ReturnCurrentDateEST() (year, month, day int, err error) {
@@ -77,11 +77,11 @@ func ReturnCurrentDateEST() (year, month, day int, err error) {
 		return 0, 0, 0, fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)
 	}
 
-	// Get the current year, month and day
+	// Get the current day, month and year
 	currentTimeEST := time.Now().In(est)
-	year = currentTimeEST.Year()
-	month = int(currentTimeEST.Month())
 	day = currentTimeEST.Day()
+	month = int(currentTimeEST.Month())
+	year = currentTimeEST.Year()
 
-	return year, month, day, err
+	return day, month, year, err
 }
