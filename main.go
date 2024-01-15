@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 
 	"github.com/fatih/color"
@@ -19,6 +20,7 @@ const (
 
 var (
 	blue      = color.New(color.FgBlue).SprintFunc()
+	red       = color.New(color.FgRed).SprintFunc()
 	day, year int
 )
 
@@ -58,6 +60,16 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
+		sessionCookieExists, err := path.CheckForSessionCookie(userHomeDirectory)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if !sessionCookieExists {
+			fmt.Printf(red("Session cookie file does not exist in %s/.adventofcode.session, please follow the in the README.md to make it\n"), userHomeDirectory)
+			os.Exit(1)
+		}
+
 		// Get the session cookie
 		sessionCookie, err := file.ReturnSessionCookie(userHomeDirectory)
 		if err != nil {

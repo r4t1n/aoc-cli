@@ -20,6 +20,18 @@ Everyone gets a different puzzle input, to download your input you need to provi
 
 To obtain your session cookie, login to the [Advent of Code](https://adventofcode.com) website and inspect the `session` cookie to get it's value - [see instructions](https://www.cookieyes.com/blog/how-to-check-cookies-on-your-website-manually).
 
-The session cookie (a long hex string) must be provided in a file called `.adventofcode.session` inside your home directory. For example:
+The session cookie (a long hex string) must be provided in a file called `.adventofcode.session` inside your home directory. 
 
-`/home/r4t1n/.adventofcode.session`
+For example:
+
+`/home/ratin/.adventofcode.session`
+
+## Command line flags
+
+### `-day (int)`
+
+Sets the day used for the date, replace int with the day
+
+### `-year (int)`
+
+Sets the year used for the date, replace int with the year

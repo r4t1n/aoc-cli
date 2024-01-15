@@ -26,6 +26,17 @@ func CheckForCachedInput(year, day int, userHomeDirectory string) (cachedInputEx
 	return false, nil
 }
 
+func CheckForSessionCookie(userHomeDirectory string) (sessionCookieExists bool, err error) {
+	sessionCookieFilePath := filepath.Join(userHomeDirectory, ".adventofcode.session")
+
+	// Check if the session cookie file exists
+	if _, err = os.Stat(sessionCookieFilePath); !os.IsNotExist(err) {
+		return true, err
+	}
+
+	return false, nil
+}
+
 func ReturnUserHomeDirectory() (userHomeDirectory string, err error) {
 	// Get the Advent of Code session cookie from the users home directory
 	currentUser, err := user.Current()
