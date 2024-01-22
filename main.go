@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
+	baseCalendarURL = "https://adventofcode.com/%d"
+	baseInputURL    = "https://adventofcode.com/%d/day/%d/input"
 )
 
 var (
@@ -47,6 +48,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	GetInput(day, year, userHomeDirectory)
+
+}
+
+func GetInput(day, year int, userHomeDirectory string) {
 	// Check if the cached input exists
 	cachedInputExists, err := path.CheckForCachedInput(year, day, userHomeDirectory)
 	if err != nil {
@@ -54,17 +60,20 @@ func main() {
 	}
 
 	if cachedInputExists {
+		// Copy the cached input
 		fmt.Printf("Copying input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 		err = file.CopyInput(day, year, userHomeDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else {
+		// Check if the session cookie exists
 		sessionCookieExists, err := path.CheckForSessionCookie(userHomeDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		// If the session cookie does not exist notify the user
 		if !sessionCookieExists {
 			fmt.Printf(red("Session cookie file does not exist in %s/.adventofcode.session, please follow the in the README.md to make it\n"), userHomeDirectory)
 			os.Exit(1)
@@ -76,18 +85,16 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Downloading input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
-
 		// Make the HTTP GET request and get the response body
 		inputURL := fmt.Sprintf(baseInputURL, year, day)
+		fmt.Printf("Downloading input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 		body, err := http.ReturnBody(inputURL, sessionCookie)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Writing input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
-
 		// Write the response body to file in the working directory
+		fmt.Printf("Writing input for %s/%s...\n", blue(strconv.Itoa(year)), blue(strconv.Itoa(day)))
 		err = file.WriteInput(day, year, userHomeDirectory, body)
 		if err != nil {
 			log.Fatal(err)

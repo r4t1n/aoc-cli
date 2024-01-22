@@ -34,7 +34,7 @@ func ReturnDate() (day, year int, err error) {
 			timeYear = timeYear - 1
 		}
 		if timeDay > 25 {
-			day = defaultDay
+			timeDay = defaultDay
 		}
 
 		return timeDay, timeYear, nil

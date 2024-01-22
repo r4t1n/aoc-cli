@@ -22,7 +22,8 @@ func ReturnSessionCookie(userHomeDirectory string) (sessionCookie string, err er
 }
 
 func CopyInput(day, year int, userHomeDirectory string) error {
-	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input.txt")
+	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input")
+	filePath := "input"
 
 	cacheFilePathFile, err := os.Open(cacheFilePath)
 	if err != nil {
@@ -30,27 +31,27 @@ func CopyInput(day, year int, userHomeDirectory string) error {
 	}
 	defer cacheFilePathFile.Close()
 
-	destinationFile, err := os.Create("input.txt")
+	destinationFile, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("error creating file at %s: %v", "input.txt", err)
+		return fmt.Errorf("error creating file at %s: %v", filePath, err)
 	}
 	defer destinationFile.Close()
 
 	_, err = io.Copy(destinationFile, cacheFilePathFile)
 	if err != nil {
-		return fmt.Errorf("error copying %s to %s: %v", cacheFilePath, "input.txt", err)
+		return fmt.Errorf("error copying %s to %s: %v", cacheFilePath, filePath, err)
 	}
 
 	err = destinationFile.Sync()
 	if err != nil {
-		return fmt.Errorf("error syncing %s: %v", "input.txt", err)
+		return fmt.Errorf("error syncing %s: %v", filePath, err)
 	}
 
 	return nil
 }
 
 func WriteInput(day, year int, userHomeDirectory, input string) error {
-	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input.txt")
+	cacheFilePath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day), "input")
 
 	// Write the input to the file
 	err := os.WriteFile(cacheFilePath, []byte(input), 0644)
