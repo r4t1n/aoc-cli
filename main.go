@@ -15,7 +15,6 @@ import (
 )
 
 const (
-	baseCalendarURL = "https://adventofcode.com/%d"
 	baseInputURL    = "https://adventofcode.com/%d/day/%d/input"
 )
 
