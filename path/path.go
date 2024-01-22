@@ -10,7 +10,7 @@ import (
 
 func CheckForCachedInput(year, day int, userHomeDirectory string) (cachedInputExists bool, err error) {
 	dateFolderPath := filepath.Join(userHomeDirectory, ".cache", "aoc-cli", strconv.Itoa(year), strconv.Itoa(day))
-	inputFilePath := filepath.Join(dateFolderPath, "input.txt")
+	inputFilePath := filepath.Join(dateFolderPath, "input")
 
 	// Check if the date folder exists, if not create it
 	if _, err = os.Stat(dateFolderPath); os.IsNotExist(err) {

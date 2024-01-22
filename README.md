@@ -26,12 +26,12 @@ For example:
 
 `/home/ratin/.adventofcode.session`
 
-## Command line flags
+## Usage
 
-#### `-day int`
-
-Sets the day used for the date, replace int with the day
-
-#### `-year int`
-
-Sets the year used for the date, replace int with the year
+```
+Usage of aoc:
+  -day int
+        The day used for the date
+  -year int
+        The year used for the date
+```
