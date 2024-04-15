@@ -39,9 +39,13 @@ func main() {
 	if day == 0 {
 		_, day, err = date.ReturnDate()
 	}
-
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if year < 2015 || day > 25 {
+		fmt.Println(red("Date provided is invalid!"))
+		os.Exit(1)
 	}
 
 	// Get the users home directory
@@ -76,7 +80,7 @@ func GetInput(year, day uint, userHomeDirectory string) {
 
 		// If the session cookie does not exist notify the user
 		if !sessionCookieExists {
-			fmt.Printf(red("Session cookie file does not exist in %s/.adventofcode.session, please follow the in the README.md to make it\n"), userHomeDirectory)
+			fmt.Printf(red("Session cookie file does not exist in \"%s/.adventofcode.session\"!,\nplease follow the in the README.md to make it\n"), userHomeDirectory)
 			os.Exit(1)
 		}
 
