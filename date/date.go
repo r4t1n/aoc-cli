@@ -13,15 +13,31 @@ const (
 	defaultDay = 1
 )
 
-func ReturnDate() (day, year int, err error) {
+func ReturnCurrentDateEST() (year, month, day uint, err error) {
+	// Set the timezone to EST/UTC-5 as Advent of Code uses it
+	est, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		return 0, 0, 0, fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)
+	}
+
+	// Get the current day, month and year
+	currentTimeEST := time.Now().In(est)
+	year = uint(currentTimeEST.Year())
+	month = uint(currentTimeEST.Month())
+	day = uint(currentTimeEST.Day())
+
+	return year, day, month, err
+}
+
+func ReturnDate() (year, day uint, err error) {
 	// Return the date from the path
-	pathDay, pathYear, err := ReturnDateFromPath()
+	pathYear, pathDay, err := ReturnDateFromPath()
 	if err != nil {
 		return 0, 0, err
 	}
 
 	// Return the date from the current date
-	timeDay, timeMonth, timeYear, err := ReturnCurrentDateEST()
+	timeYear, timeMonth, timeDay, err := ReturnCurrentDateEST()
 	if err != nil {
 		return 0, 0, err
 	}
@@ -37,13 +53,13 @@ func ReturnDate() (day, year int, err error) {
 			timeDay = defaultDay
 		}
 
-		return timeDay, timeYear, nil
+		return uint(timeYear), uint(timeDay), nil
 	} else {
-		return pathDay, pathYear, nil
+		return uint(pathYear), uint(pathDay), nil
 	}
 }
 
-func ReturnDateFromPath() (day, year int, err error) {
+func ReturnDateFromPath() (year, day uint, err error) {
 	// Get the working directory
 	workingDirectory, err := os.Getwd()
 	if err != nil {
@@ -67,21 +83,5 @@ func ReturnDateFromPath() (day, year int, err error) {
 		}
 	}
 
-	return pathDay, pathYear, err
-}
-
-func ReturnCurrentDateEST() (year, month, day int, err error) {
-	// Set the timezone to EST/UTC-5 as Advent of Code uses it
-	est, err := time.LoadLocation("America/New_York")
-	if err != nil {
-		return 0, 0, 0, fmt.Errorf("error loading the EST/UTC-5 timezone: %v", err)
-	}
-
-	// Get the current day, month and year
-	currentTimeEST := time.Now().In(est)
-	day = currentTimeEST.Day()
-	month = int(currentTimeEST.Month())
-	year = currentTimeEST.Year()
-
-	return day, month, year, err
+	return uint(pathYear), uint(pathDay), err
 }
