@@ -1,15 +1,20 @@
-DESTINATION = /usr/local/bin
-TARGET = aoc
-
-all: build
+target = aoc
+target_path = /usr/local/bin/aoc
 
 build:
-	go build -o $(TARGET)
+	go build -o $(target)
+
+check-root:
+	@if [ `id -u` -ne 0 ]; then \
+		echo "Root privileges needed"; \
+		exit 1; \
+	fi
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(target)
 
-install: $(TARGET)
-	cp $(TARGET) $(DESTINATION)
+install: check-root
+	cp $(target) $(target_path)
 
-.PHONY: build clean install
+uninstall: check-root
+	rm -f $(target_path)

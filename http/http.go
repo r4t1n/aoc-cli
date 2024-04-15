@@ -20,7 +20,7 @@ func ReturnBody(URL, sessionCookie string) (body string, err error) {
 		Name:  "session",
 		Value: sessionCookie,
 	})
-	req.Header.Set("User-Agent", "https://github.com/r4t1n/aoc-cli by ratin")
+	req.Header.Set("User-Agent", "̈́github.com/r4t1n/aoc-cli by ratin")
 
 	// Make the request and close the response body
 	resp, err := client.Do(req)

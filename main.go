@@ -11,11 +11,10 @@ import (
 	"github.com/r4t1n/aoc-cli/date"
 	"github.com/r4t1n/aoc-cli/file"
 	"github.com/r4t1n/aoc-cli/http"
-	"github.com/r4t1n/aoc-cli/path"
 )
 
 const (
-	baseInputURL    = "https://adventofcode.com/%d/day/%d/input"
+	baseInputURL = "https://adventofcode.com/%d/day/%d/input"
 )
 
 var (
@@ -42,7 +41,7 @@ func main() {
 	}
 
 	// Get the users home directory
-	userHomeDirectory, err := path.ReturnUserHomeDirectory()
+	userHomeDirectory, err := file.ReturnUserHomeDirectory()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +52,7 @@ func main() {
 
 func GetInput(day, year int, userHomeDirectory string) {
 	// Check if the cached input exists
-	cachedInputExists, err := path.CheckForCachedInput(year, day, userHomeDirectory)
+	cachedInputExists, err := file.CheckForCachedInput(year, day, userHomeDirectory)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +66,7 @@ func GetInput(day, year int, userHomeDirectory string) {
 		}
 	} else {
 		// Check if the session cookie exists
-		sessionCookieExists, err := path.CheckForSessionCookie(userHomeDirectory)
+		sessionCookieExists, err := file.CheckForSessionCookie(userHomeDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
