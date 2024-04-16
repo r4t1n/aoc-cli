@@ -93,7 +93,7 @@ func GetInput(year, day uint, userHomeDirectory string) {
 
 		// If the session cookie does not exist notify the user
 		if !sessionCookieExists {
-			fmt.Printf(red("Session cookie file does not exist in \"%s/.adventofcode.session\"!,\nplease follow the in the README.md to make it\n"), userHomeDirectory)
+			fmt.Printf("%s in \"%s/.adventofcode.session\"!\nPlease follow the README.md to make it\n", red("Session cookie file does not exist"), userHomeDirectory)
 			os.Exit(1)
 		}
 
