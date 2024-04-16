@@ -26,7 +26,7 @@ func ReturnCurrentDateEST() (year, month, day uint, err error) {
 	month = uint(currentTimeEST.Month())
 	day = uint(currentTimeEST.Day())
 
-	return year, day, month, err
+	return year, month, day, err
 }
 
 func ReturnDate() (year, day uint, err error) {
@@ -43,19 +43,18 @@ func ReturnDate() (year, day uint, err error) {
 	}
 
 	// Check if date from path is invalid
-	if pathDay < 1 || pathDay > 25 || pathYear < 2015 || pathYear > timeYear || (pathYear == timeYear && timeMonth != 12) {
+	if pathYear < 2015 || pathYear > timeYear || pathDay < 1 || pathDay > 25 || (pathYear == timeYear && timeMonth != 12) {
 		// Check if date from time is invalid
 		if timeMonth != 12 {
-			timeDay = defaultDay
 			timeYear = timeYear - 1
+			timeDay = defaultDay
 		}
 		if timeDay > 25 {
 			timeDay = defaultDay
 		}
-
-		return uint(timeYear), uint(timeDay), nil
+		return timeYear, timeDay, nil
 	} else {
-		return uint(pathYear), uint(pathDay), nil
+		return pathYear, pathDay, nil
 	}
 }
 

@@ -18,34 +18,47 @@ const (
 )
 
 var (
-	blue      = color.New(color.FgBlue).SprintFunc()
-	red       = color.New(color.FgRed).SprintFunc()
-	year, day uint
+	blue            = color.New(color.FgBlue).SprintFunc()
+	red             = color.New(color.FgRed).SprintFunc()
+	argYear, argDay uint
 )
 
 func init() {
-	flag.UintVar(&year, "year", 0, "The year used for the date")
-	flag.UintVar(&day, "day", 0, "The day used for the date")
+	flag.UintVar(&argYear, "year", 0, "The year used for the date")
+	flag.UintVar(&argDay, "day", 0, "The day used for the date")
 }
 
 func main() {
 	flag.Parse()
 
 	// Get the date either from the path or the time
-	var err error
-	if year == 0 {
-		year, _, err = date.ReturnDate()
-	}
-	if day == 0 {
-		_, day, err = date.ReturnDate()
-	}
+	year, day, err := date.ReturnDate()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if year < 2015 || day > 25 {
-		fmt.Println(red("Date provided is invalid!"))
-		os.Exit(1)
+	timeYear, timeMonth, _, err := date.ReturnCurrentDateEST()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if argYear != 0 || argDay != 0 {
+		if argYear != 0 {
+			if argYear < 2015 || argYear > timeYear || (argYear == timeYear && timeMonth != 12) {
+				fmt.Println(red("Year provided is invalid!"))
+				os.Exit(1)
+			} else {
+				year = argYear
+			}
+		}
+		if argDay != 0 {
+			if argDay < 1 || argDay > 25 {
+				fmt.Println(red("Day provided is invalid!"))
+				os.Exit(1)
+			} else {
+				day = argDay
+			}
+		}
 	}
 
 	// Get the users home directory
