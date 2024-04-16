@@ -11,7 +11,7 @@ Command line interface for [Advent of Code](https://adventofcode.com/about)
 **[Make sure go is installed for building aoc-cli](https://go.dev/doc/install)**
 
 ```
-git clone https://github.com/r4t1n/aoc-cli.git && cd aoc-cli && make build install
+git clone https://github.com/r4t1n/aoc-cli; cd aoc-cli; make; sudo make install
 ```
 
 ## Session cookie
@@ -30,8 +30,8 @@ For example:
 
 ```
 Usage of aoc:
-  -day int
+  -day uint
         The day used for the date
-  -year int
+  -year uint
         The year used for the date
 ```
